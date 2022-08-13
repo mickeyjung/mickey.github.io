@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mysite</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .Aposition {position: absolute; 
+                    top: 50%; left: 10%;
+                    transform: translate(-50%, -50%);}
+        .Bposition {position: absolute;
+                    top: 50%; left: 30%;
+                    transform: translate(-50%, -50%);}
+        .Cposition {position: absolute;
+                    top: 50%; left: 50%;
+                    transform: translate(-50%, -50%);}
+        .Dposition {position: absolute;
+                    top: 50%; left: 70%;
+                    transform: translate(-50%, -50%);}
+        .Eposition {position: absolute;
+                    top: 50%; left: 90%;
+                    transform: translate(-50%, -50%);}
+        .Aval {position: absolute;
+                top: 40%; left: 10%;
+                transform: translate(-50%, -50%);}
+        .Bval {position: absolute;
+                top: 40%; left: 30%;
+                transform: translate(-50%, -50%);}
+        .Cval {position: absolute;
+                top: 40%; left: 50%;
+                transform: translate(-50%, -50%);}
+        .Dval {position: absolute;
+                top: 40%; left: 70%;
+                transform: translate(-50%, -50%);}
+        .Eval {position: absolute;
+                top: 40%; left: 90%;
+                transform: translate(-50%, -50%);}
+        .OK {width: 240px; height: 80px;
+            position: absolute;
+            top: 70%; left: 50%;
+            transform: translate(-50%, -50%);}
+        .Turn {font-size: 50px;
+                position: absolute;
+                top: 20%; left: 50%;
+                transform: translate(-50%, -50%);}
+        .GoFirst {width: 240px; height: 80px;
+            position: absolute;
+            top: 20%; left: 20%;
+            transform: translate(-50%, -50%);}
+        .GoNext {width: 240px; height: 80px;
+            position: absolute;
+            top: 20%; left: 80%;
+            transform: translate(-50%, -50%);}
+    </style>
+</head>
+<body>
+    <button class = 'Aposition' onclick="Decrease(0)">A</button>
+    <button class = 'Bposition' onclick="Decrease(1)">B</button>
+    <button class = 'Cposition' onclick="Decrease(2)">C</button>
+    <button class = 'Dposition' onclick="Decrease(3)">D</button>
+    <button class = 'Eposition' onclick="Decrease(4)">E</button>
+    <button class = 'OK' onclick="Finish()">OK</button>
+    <div class = 'Turn' id="T"></div>
+    <button class = 'GoFirst' id = "F" onclick="First()">Go First</button>
+    <button class = 'GoNext' id = "N" onclick="Next()">Go Next</button>
+    <div class = 'Aval' id="A">10</div>
+    <div class = 'Bval' id="B">10</div>
+    <div class = 'Cval' id="C">10</div>
+    <div class = 'Dval' id="D">10</div>
+    <div class = 'Eval' id="E">10</div>
+    
+    <script>
+        var rand1 = Math.floor(Math.random() * 10) + 5;
+        var rand2 = Math.floor(Math.random() * 10) + 5;
+        var rand3 = Math.floor(Math.random() * 10) + 5;
+        var rand4 = Math.floor(Math.random() * 10) + 5;
+        var rand5 = Math.floor(Math.random() * 10) + 5;
+        var val = [rand1, rand2, rand3, rand4, rand5];
+        document.getElementById("A").innerHTML = val[0];
+        document.getElementById("B").innerHTML = val[1];
+        document.getElementById("C").innerHTML = val[2];
+        document.getElementById("D").innerHTML = val[3];
+        document.getElementById("E").innerHTML = val[4];
+        
+        var clicked_OK = false;
+        var clicked = -1;
+        var clicked_Turn = false;
+
+        function First() {
+            if (clicked_Turn == true)
+                return;
+            document.getElementById("T").innerHTML = "Wait...";
+            document.getElementById("F").style.visibility="hidden";
+            document.getElementById("N").style.visibility="hidden";
+            setTimeout(function () {
+                clicked_Turn = true;
+                document.getElementById("T").innerHTML = "Your Turn";
+            }, 1000);
+        }
+
+        function Next() {
+            if (clicked_Turn == true)
+                return;
+            document.getElementById("T").innerHTML = "Wait...";
+            document.getElementById("F").style.visibility="hidden";
+            document.getElementById("N").style.visibility="hidden";
+            setTimeout(function () {
+                clicked = 0;
+                clicked_Turn = true;
+                Finish();
+            }, 1000);
+        }
+
+        function Decrease(i) {
+            if (clicked_Turn == false)
+                alert("Choose your turn");
+            else if (clicked_OK == true)
+                alert("It's not your turn yet");
+            else if (val[i] == 0 || (clicked != -1 && clicked != i))
+                alert("An impossible command!");
+            else {
+                clicked = i;
+                val[i]--;
+                if (i == 0)
+                    document.getElementById("A").innerHTML = val[i];
+                else if (i == 1)
+                    document.getElementById("B").innerHTML = val[i];
+                else if (i == 2)
+                    document.getElementById("C").innerHTML = val[i];
+                else if (i == 3)
+                    document.getElementById("D").innerHTML = val[i];
+                else
+                    document.getElementById("E").innerHTML = val[i];
+                var over = true;
+                for (var i=0; i<5; i++) {
+                    if (val[i] != 0)
+                        over = false;
+                }
+                if (over == true)
+                    document.getElementById("T").innerHTML = "You Win";
+            }
+        }
+
+        function Finish() {
+            if (clicked_Turn == false) {
+                alert("Choose your turn");
+                return;
+            }
+            if (clicked == -1) {
+                alert("It's still your turn");
+                return;
+            }
+            document.getElementById("T").innerHTML = "Computer's Turn";
+            clicked_OK = true;
+            var x = val[0] ^ val[1] ^ val[2] ^ val[3] ^ val[4];
+            setTimeout(function () {
+                if (x == 0) {
+                    for (var i=0; i<5; i++) {
+                        if (val[i] == 0) continue;
+                        var rand = Math.floor(Math.random() * (val[i]-1));
+                        val[i] -= rand+1;
+                        if (i == 0)
+                            document.getElementById("A").innerHTML = val[i];
+                        else if (i == 1)
+                            document.getElementById("B").innerHTML = val[i];
+                        else if (i == 2)
+                            document.getElementById("C").innerHTML = val[i];
+                        else if (i == 3)
+                            document.getElementById("D").innerHTML = val[i];
+                        else
+                            document.getElementById("E").innerHTML = val[i];
+                        break;
+                    }
+                }
+                else {
+                    for (var i=0; i<5; i++) {
+                        var f = false;
+                        for (var j=val[i]; j>=1; j--) {
+                            var now = val[i] - j;
+                            for (var k=0; k<5; k++) {
+                                if (k == i) continue;
+                                now ^= val[k];
+                            }
+                            if (now != 0) continue;
+                            val[i] = val[i] - j;
+                            if (i == 0)
+                            document.getElementById("A").innerHTML = val[i];
+                            else if (i == 1)
+                                document.getElementById("B").innerHTML = val[i];
+                            else if (i == 2)
+                                document.getElementById("C").innerHTML = val[i];
+                            else if (i == 3)
+                                document.getElementById("D").innerHTML = val[i];
+                            else
+                                document.getElementById("E").innerHTML = val[i];
+                            break;
+                        }
+                        if (f == true)
+                            break;
+                    }
+                }
+                var over = true;
+                for (var i=0; i<5; i++) {
+                    if (val[i] != 0)
+                        over = false;
+                }
+                if (over == true)
+                    document.getElementById("T").innerHTML = "You Lose";
+                else
+                    document.getElementById("T").innerHTML = "Your Turn";
+                clicked_OK = false;
+                clicked = -1;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
